@@ -4,7 +4,10 @@
   "description": "\"issue tracker\"",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon src/index.ts"
+    "build": "tsc --build",
+    "dev": "nodemon src/index.ts",
+    "start": "node build/index.js",
+    "heroku-postbuild": "npm run build && cd client && npm install && npm run build"
   },
   "repository": {
     "type": "git",
@@ -13,7 +16,8 @@
   "author": "blackanthem",
   "license": "ISC",
   "engines": {
-    "node": "14.x"
+    "node": "14.x",
+    "npm": "8.x"
   },
   "dependencies": {
     "axios": "^0.26.1",
