@@ -10,6 +10,12 @@ declare global {
       DB_PASSWORD: string;
       DB_NAME: string;
       DATABASE_URL: string;
+      JIRA_API_AUTH_URL: string;
+      JIRA_CLIENT_ID: string;
+      JIRA_SECRET: string;
+      JIRA_REDIRECT_URI: string;
+      KEY_1: string;
+      KEY_2: string;
     }
   }
 }
