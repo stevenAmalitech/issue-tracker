@@ -7,6 +7,7 @@ interface SessionsAttributes {
   accessToken: string;
   scope: string;
   expiresIn: number;
+  cloudId: string;
 }
 
 interface SessionCreationAttributes
@@ -24,6 +25,8 @@ const sessionModel = sequelize.define<SessionInstance>(
     accessToken: { type: DataTypes.TEXT, allowNull: false },
     scope: { type: DataTypes.STRING, allowNull: false },
     expiresIn: { type: DataTypes.INTEGER, allowNull: false },
+    cloudId: { type: DataTypes.STRING, allowNull: false },
+
   },
   { underscored: true }
 );
