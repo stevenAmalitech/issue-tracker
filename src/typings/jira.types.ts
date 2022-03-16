@@ -8,3 +8,11 @@ export interface AccessTokenResponse {
   expires_in: number;
   scope: string;
 }
+
+export interface CloudIdObject {
+  id: string;
+  url: string;
+  name: string;
+  scopes: [string];
+  avatarUrl: string;
+}

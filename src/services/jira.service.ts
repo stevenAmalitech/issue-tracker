@@ -1,10 +1,13 @@
 import Keygrip from "keygrip";
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
-import { sessionModel } from "../models/sessions.model";
-import { AccessTokenParams, AccessTokenResponse } from "../typings/jira.types";
+import { sessionModel } from "../models/session.model";
+import {
+  AccessTokenParams,
+  AccessTokenResponse,
+  CloudIdObject,
+} from "../typings/jira.types";
 
 const keys = new Keygrip([process.env.KEY_1!, process.env.KEY_2!]);
-// const http
 
 export function jiraAuthUrl(sessionId: string) {
   const authorizationUrl = process.env.JIRA_API_AUTH_URL;
@@ -46,14 +49,35 @@ export async function jiraAccessToken(params: AccessTokenParams) {
     );
     const { data } = response;
 
+    const cloudId = await getCloudId(data.access_token);
+
     await sessionModel.create({
       accessToken: data.access_token,
       expiresIn: data.expires_in,
       scope: data.scope,
       sessionId,
+      cloudId,
     });
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
 
-    return "saved";
+async function getCloudId(accessToken: string) {
+  try {
+    const axiosConfig = <AxiosRequestConfig>{
+      method: "get",
+      url: " https://api.atlassian.com/oauth/token/accessible-resources",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        Accept: " application/json",
+      },
+    };
+
+    const response = <AxiosResponse<[CloudIdObject]>>await axios(axiosConfig);
+
+    return response.data[0].id;
   } catch (error) {
     console.error(error);
     throw error;
