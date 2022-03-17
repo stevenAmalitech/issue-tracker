@@ -1,26 +1,28 @@
 import { Model, DataTypes, Optional } from "sequelize";
 import { sequelize } from "../db/db";
+import { clientModel } from "./client.model";
 
 interface AdminAttributes {
   id: number;
   email: string;
-  clients: [number];
 }
 
-interface AdminCreationAttributes extends Optional<AdminAttributes, "id" | "clients"> {}
+interface AdminCreationAttributes extends Optional<AdminAttributes, "id"> {}
 
-interface AdminInstance
+export interface AdminInstance
   extends Model<AdminAttributes, AdminCreationAttributes>,
     AdminAttributes {}
 
 const adminModel = sequelize.define<AdminInstance>(
-  "Admin",
+  "admin",
   {
     id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
     email: { type: DataTypes.STRING, allowNull: false, unique: true },
-    clients: { type: DataTypes.ARRAY(DataTypes.INTEGER) },
   },
   { underscored: true }
 );
+
+adminModel.hasMany(clientModel);
+clientModel.belongsTo(adminModel);
 
 export { adminModel };

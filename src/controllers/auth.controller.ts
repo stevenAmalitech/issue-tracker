@@ -1,11 +1,15 @@
 import { NextFunction as Next, Request as Req, Response as Res } from "express";
 import store from "store2";
+import { authSchema } from "../joi";
 import { jiraAccessToken, jiraAuthUrl } from "../services/jira.service";
-import { createOrFindAdmin } from "../services/user.service";
+import { createClient, createOrFindAdmin } from "../services/user.service";
+import { PostClient } from "../typings/auth.types";
 
 export async function getJiraAuthUrl(req: Req, res: Res, next: Next) {
   const sessionId = req.session.id;
-  const email = req.query.email;
+  const { email } = req.query;
+
+  if (!email) return next({ staus: 400 });
 
   store(sessionId, email);
 
@@ -27,11 +31,27 @@ export async function getJiraAccessToken(req: Req, res: Res, next: Next) {
 
     const email = store.remove(sessionId);
     const id = await createOrFindAdmin(email);
-    
+
     store(sessionId, { role: "admin", id });
 
-    res.send("done");
+    res.send(email);
   } catch (error) {
+    console.error(error);
+    return next({ status: 400 });
+  }
+}
+
+export async function postClient(req: Req, res: Res, next: Next) {
+  try {
+    const clientData = <PostClient>await authSchema.postClient({
+      ...req.body,
+      ...req.params,
+    });
+
+    const df = await createClient(clientData);
+    res.send(df);
+  } catch (error) {
+    console.error(error);
     return next({ status: 400 });
   }
 }
