@@ -2,8 +2,8 @@ import { NextFunction as Next, Request as Req, Response as Res } from "express";
 import store from "store2";
 import { authSchema } from "../joi";
 import { jiraAccessToken, jiraAuthUrl } from "../services/jira.service";
-import { createClient, createOrFindAdmin } from "../services/user.service";
-import { PostClient } from "../typings/auth.types";
+import * as userService from "../services/user.service";
+import { PostClient, PostClientLogin } from "../typings/auth.types";
 
 export async function getJiraAuthUrl(req: Req, res: Res, next: Next) {
   const sessionId = req.session.id;
@@ -30,7 +30,7 @@ export async function getJiraAccessToken(req: Req, res: Res, next: Next) {
     await jiraAccessToken({ code, state, sessionId });
 
     const email = store.remove(sessionId);
-    const id = await createOrFindAdmin(email);
+    const id = await userService.createOrFindAdmin(email);
 
     store(sessionId, { role: "admin", id });
 
@@ -43,15 +43,35 @@ export async function getJiraAccessToken(req: Req, res: Res, next: Next) {
 
 export async function postClient(req: Req, res: Res, next: Next) {
   try {
-    const clientData = <PostClient>await authSchema.postClient({
+    const clientCredentials = <PostClient>await authSchema.postClient({
       ...req.body,
       ...req.params,
     });
 
-    const df = await createClient(clientData);
+    const df = await userService.createClient(clientCredentials);
     res.send(df);
   } catch (error) {
     console.error(error);
     return next({ status: 400 });
+  }
+}
+
+export async function postClientLogin(req: Req, res: Res, next: Next) {
+  try {
+    const clientCredentials = <PostClientLogin>(
+      await authSchema.postClientLogin(req.body)
+    );
+
+    const result = await userService.loginClient(clientCredentials);
+
+    if (result === "input password") return res.redirect("/set-password");
+
+    const [client, id] = result;
+    store(req.session.id, { role: "client", id });
+
+    res.send(client);
+  } catch (error: any) {
+    if (error.isJoi) return res.send(error.message).status(422);
+    return next(error);
   }
 }

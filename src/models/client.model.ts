@@ -2,10 +2,9 @@ import {
   Model,
   DataTypes,
   Optional,
-  BelongsToGetAssociationMixin,
 } from "sequelize";
 import { sequelize } from "../db/db";
-import { AdminInstance, adminModel } from "./admin.model";
+import { hashPassword } from "../utils/hashPasswords";
 
 interface ClientAttributes {
   id: number;
@@ -30,14 +29,15 @@ const clientModel = sequelize.define<ClientInstance>(
     firstName: { type: DataTypes.STRING, allowNull: true, defaultValue: null },
     lastName: { type: DataTypes.STRING, allowNull: true, defaultValue: null },
     password: { type: DataTypes.STRING, allowNull: false },
-    email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      //  unique: true
-    },
+    email: { type: DataTypes.STRING, allowNull: false, unique: true },
     adminId: { type: DataTypes.INTEGER },
   },
   { underscored: true }
 );
+
+clientModel.addHook("beforeCreate", async (client, options) => {
+  // @ts-expect-error
+  client.password = await hashPassword(client.password);
+});
 
 export { clientModel };
