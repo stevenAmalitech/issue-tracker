@@ -36,7 +36,7 @@ export default function LoginPage(props) {
 
   return (
     <div className=" min-h-screen flex flex-col p-3 items-center gap-14 lg:flex-row lg:justify-center lg:gap-36">
-      <section className="max-w-md w-full flex-1">
+      <section className="max-w-md w-full flex-1 shadow-lg p-10 rounded-lg m-5">
         <h2 className="mb-6 text-3xl font-bold">Client Login</h2>
         <div className="mb-6">
           <InputField
@@ -64,7 +64,7 @@ export default function LoginPage(props) {
         </div>
       </section>
 
-      <section className="max-w-md w-full flex-1">
+      <section className="max-w-md w-full flex-1  p-10 rounded-lg m-5 max-w-md">
         <h2 className="mb-6 text-3xl font-bold">Admin Login</h2>
         <div className="mb-6">
           <InputField

@@ -22,7 +22,7 @@ export default function SetPassword() {
 
   return (
     <div className="min-h-screen flex justify-center items-center">
-      <section className="shadow-lg p-10 rounded-lg m-5">
+      <section className="shadow-lg p-10 rounded-lg m-5 max-w-md">
         <h2 className="mb-1  text-3xl font-bold">Set new password</h2>
         <p className="text-sm mb-8 text-gray-600 leading-normal">
           You need to set a new password before you can continue
