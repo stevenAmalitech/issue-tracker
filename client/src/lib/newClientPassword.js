@@ -1,6 +1,6 @@
 import http from "../utils/http";
 
-export default async function setClientPassword({
+export default async function newClientPassword({
   email,
   newPassword,
   repeatedPassword,
@@ -15,6 +15,7 @@ export default async function setClientPassword({
     });
 
     if (data.firstName) return data;
+    return null;
   } catch (error) {
     console.error(error);
   }
