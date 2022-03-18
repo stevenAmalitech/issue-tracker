@@ -1,6 +1,10 @@
 import { adminModel } from "../models/admin.model";
 import { clientModel } from "../models/client.model";
-import { PostClient, PostClientLogin } from "../typings/auth.types";
+import {
+  PostClient,
+  PostClientLogin,
+  PostClientPassword,
+} from "../typings/auth.types";
 import { verifyPassword } from "../utils/hashPasswords";
 
 export async function createOrFindAdmin(email: string) {
@@ -20,6 +24,7 @@ export async function createClient(params: PostClient) {
       password,
       email,
       adminId,
+      // TODO: LOGIN NULLO
     });
 
     return "ok";
@@ -33,7 +38,6 @@ export async function loginClient(params: PostClientLogin) {
     const { email, password, adminId } = params;
 
     const client = await clientModel.findOne({ where: { email } });
-
     if (!client) throw "client not found";
 
     if (!(adminId && adminId === client.adminId)) throw "unknown";
@@ -45,6 +49,25 @@ export async function loginClient(params: PostClientLogin) {
 
     const { firstName, lastName, id } = client;
 
+    return [{ email, firstName, lastName }, id];
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function setClientPassword(params: PostClientPassword) {
+  try {
+    const { email, password, originalPassword } = params;
+
+    const client = await clientModel.findOne({ where: { email } });
+    if (!client) throw "client not found";
+
+    // const isPasswordValid = await verifyPassword(originalPassword, client.password);
+    // if (!isPasswordValid) throw "password invalid";
+
+    await client.update({ password, lastLogin: new Date() });
+
+    const { firstName, lastName, id } = client;
     return [{ email, firstName, lastName }, id];
   } catch (error) {
     throw error;
