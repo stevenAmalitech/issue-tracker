@@ -1,9 +1,11 @@
 import Button from "../components/Button";
 import InputField from "../components/Inputs/InputField";
 import { useState } from "react";
-import setClientPassword from "../lib/setClientPassword";
+import newClientPassword from "../lib/newClientPassword";
+import { useNavigate } from "react-router-dom";
 
 export default function SetPassword() {
+  const navigate = useNavigate();
   const [clientCredentials, setClientCredentials] = useState({
     newPassword: "",
     repeatedPassword: "",
@@ -17,7 +19,9 @@ export default function SetPassword() {
 
   const handleButtonClick = () => {
     // TODO: VALIDATION
-    setClientPassword(clientCredentials);
+    newClientPassword(clientCredentials).then((client) => {
+      navigate("/client");
+    });
   };
 
   return (

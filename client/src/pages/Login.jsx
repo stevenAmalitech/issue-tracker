@@ -26,7 +26,7 @@ export default function LoginPage(props) {
     clientLogin(client).then((result) => {
       if (result === "redirect")
         navigate(`/set-password?email=` + client.email);
-      if (result === "login") navigate("");
+      if (result === "login") navigate("/client");
     });
   };
 
