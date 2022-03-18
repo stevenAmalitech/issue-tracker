@@ -9,6 +9,8 @@ export const authSchema = {
   postClient: (object: any) =>
     Joi.object({
       email: Joi.string().email().required(),
+      lastName: Joi.string().lowercase().required(),
+      firstName: Joi.string().lowercase().required(),
       password: Joi.string().required(),
       adminId: Joi.number().required(),
     }).validateAsync(object),

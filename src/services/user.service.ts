@@ -18,13 +18,15 @@ export async function createOrFindAdmin(email: string) {
 
 export async function createClient(params: PostClient) {
   try {
-    const { adminId, email, password } = params;
+    const { adminId, email, password, firstName, lastName } = params;
 
     await clientModel.create({
       password,
       email,
       adminId,
-      // TODO: LOGIN NULLO
+      lastLogin: null,
+      firstName,
+      lastName,
     });
 
     return "ok";
@@ -40,13 +42,14 @@ export async function loginClient(params: PostClientLogin) {
     const client = await clientModel.findOne({ where: { email } });
     if (!client) throw "client not found";
 
-    if (!(adminId && adminId === client.adminId)) throw "unknown";
+    if (adminId) if (adminId !== client.adminId) throw "unknown";
 
     const isPasswordValid = await verifyPassword(password, client.password);
     if (!isPasswordValid) throw "password invalid";
 
-    if (!client.lastName) return "input password";
+    if (client.lastLogin === null) return "input password";
 
+    client.update({ lastLogin: new Date() });
     const { firstName, lastName, id } = client;
 
     return [{ email, firstName, lastName }, id];

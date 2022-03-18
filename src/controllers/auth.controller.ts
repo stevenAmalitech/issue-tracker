@@ -54,9 +54,9 @@ export async function postClient(req: Req, res: Res, next: Next) {
 
     const df = await userService.createClient(clientCredentials);
     res.send(df);
-  } catch (error) {
-    console.error(error);
-    return next({ status: 400 });
+  } catch (error: any) {
+    if (error.isJoi) return res.send(error.message).status(422);
+    return next(error);
   }
 }
 

@@ -2,7 +2,8 @@ export interface PostClient {
   email: string;
   password: string;
   adminId: number;
-  // TODO: ADD FIRSTNAME AND LASTNAME
+  firstName: string;
+  lastName: string;
 }
 
 export interface PostClientLogin {
@@ -11,8 +12,8 @@ export interface PostClientLogin {
   adminId: number;
 }
 
-export interface PostClientPassword{
-  email:string
-  password:string
-  originalPassword:string
+export interface PostClientPassword {
+  email: string;
+  password: string;
+  originalPassword: string;
 }

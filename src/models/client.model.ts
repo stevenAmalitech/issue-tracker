@@ -1,8 +1,4 @@
-import {
-  Model,
-  DataTypes,
-  Optional,
-} from "sequelize";
+import { Model, DataTypes, Optional } from "sequelize";
 import { sequelize } from "../db/db";
 import { hashPassword } from "../utils/hashPasswords";
 
@@ -12,11 +8,15 @@ interface ClientAttributes {
   lastName: string;
   email: string;
   password: string;
+  lastLogin: Date | null;
   adminId: number;
 }
 
 interface ClientCreationAttributes
-  extends Optional<ClientAttributes, "id" | "firstName" | "lastName"> {}
+  extends Optional<
+    ClientAttributes,
+    "id"  | "lastLogin"
+  > {}
 
 interface ClientInstance
   extends Model<ClientAttributes, ClientCreationAttributes>,
@@ -30,14 +30,15 @@ const clientModel = sequelize.define<ClientInstance>(
     lastName: { type: DataTypes.STRING, allowNull: true, defaultValue: null },
     password: { type: DataTypes.STRING, allowNull: false },
     email: { type: DataTypes.STRING, allowNull: false, unique: true },
+    lastLogin: { type: DataTypes.DATE },
     adminId: { type: DataTypes.INTEGER },
   },
   { underscored: true }
 );
 
-clientModel.addHook("beforeCreate", async (client, options) => {
+clientModel.addHook("beforeSave", async (client, options) => {
   // @ts-expect-error
-  client.password = await hashPassword(client.password);
+  if (client.password) client.password = await hashPassword(client.password);
 });
 
 export { clientModel };
