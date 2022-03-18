@@ -60,15 +60,12 @@ export async function loginClient(params: PostClientLogin) {
 
 export async function setClientPassword(params: PostClientPassword) {
   try {
-    const { email, password, originalPassword } = params;
+    const { email, newPassword } = params;
 
     const client = await clientModel.findOne({ where: { email } });
     if (!client) throw "client not found";
 
-    // const isPasswordValid = await verifyPassword(originalPassword, client.password);
-    // if (!isPasswordValid) throw "password invalid";
-
-    await client.update({ password, lastLogin: new Date() });
+    await client.update({ password: newPassword, lastLogin: new Date() });
 
     const { firstName, lastName, id } = client;
     return [{ email, firstName, lastName }, id];

@@ -14,6 +14,5 @@ export interface PostClientLogin {
 
 export interface PostClientPassword {
   email: string;
-  password: string;
-  originalPassword: string;
+  newPassword: string;
 }

@@ -67,20 +67,26 @@ export async function postClientLogin(req: Req, res: Res, next: Next) {
 
     const result = await userService.loginClient(clientCredentials);
 
-    if (result === "input password") return res.redirect("/set-password");
+    if (result === "input password") {
+      store(req.session.id, "set-password");
+      return res.send({ setPassword: true });
+    }
 
     const [client, id] = result;
     store(req.session.id, { role: "client", id });
 
     res.send(client);
   } catch (error: any) {
-    if (error.isJoi) return res.send(error.message).status(422);
+    if (error.isJoi) return res.status(422).send(error.message);
     return next(error);
   }
 }
 
 export async function postClientPassword(req: Req, res: Res, next: Next) {
   try {
+    const sessionValue = store.remove(req.session.id);
+    if (sessionValue !== "set-password") return res.status(400).send();
+
     const clientData = <PostClientPassword>(
       await authSchema.postClientPassword(req.body)
     );

@@ -25,8 +25,7 @@ export const authSchema = {
   postClientPassword: (object: any) =>
     Joi.object({
       email: Joi.string().email().required(),
-      password: Joi.string().required(),
-      repeatedPassword: Joi.string().equal(Joi.ref("password")),
-      originalPassword: Joi.string().required(),
+      newPassword: Joi.string().required(),
+      repeatedPassword: Joi.string().equal(Joi.ref("newPassword")),
     }).validateAsync(object),
 };
