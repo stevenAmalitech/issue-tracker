@@ -5,7 +5,7 @@ import {
   PostClientLogin,
   PostClientPassword,
 } from "../typings/auth.types";
-import { verifyPassword } from "../utils/hashPasswords";
+import { hashPassword, verifyPassword } from "../utils/hashPasswords";
 
 export async function createOrFindAdmin(email: string) {
   try {
@@ -21,7 +21,7 @@ export async function createClient(params: PostClient) {
     const { adminId, email, password, firstName, lastName } = params;
 
     await clientModel.create({
-      password,
+      password: await hashPassword(password),
       email,
       adminId,
       lastLogin: null,
@@ -65,7 +65,9 @@ export async function setClientPassword(params: PostClientPassword) {
     const client = await clientModel.findOne({ where: { email } });
     if (!client) throw "client not found";
 
-    await client.update({ password: newPassword, lastLogin: new Date() });
+    const password = await hashPassword(newPassword);
+
+    await client.update({ password, lastLogin: new Date() });
 
     const { firstName, lastName, id } = client;
     return [{ email, firstName, lastName }, id];

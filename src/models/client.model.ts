@@ -13,10 +13,7 @@ interface ClientAttributes {
 }
 
 interface ClientCreationAttributes
-  extends Optional<
-    ClientAttributes,
-    "id"  | "lastLogin"
-  > {}
+  extends Optional<ClientAttributes, "id" | "lastLogin"> {}
 
 interface ClientInstance
   extends Model<ClientAttributes, ClientCreationAttributes>,
@@ -35,10 +32,5 @@ const clientModel = sequelize.define<ClientInstance>(
   },
   { underscored: true }
 );
-
-clientModel.addHook("beforeSave", async (client, options) => {
-  // @ts-expect-error
-  if (client.password) client.password = await hashPassword(client.password);
-});
 
 export { clientModel };
