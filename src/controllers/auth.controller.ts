@@ -40,8 +40,7 @@ export async function getJiraAccessToken(req: Req, res: Res, next: Next) {
 
     res.send(email);
   } catch (error) {
-    console.error(error);
-    return next({ status: 400 });
+    return next(error);
   }
 }
 
