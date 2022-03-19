@@ -16,3 +16,32 @@ export interface CloudIdObject {
   scopes: [string];
   avatarUrl: string;
 }
+
+export interface MakeJiraApiCall {
+  accessToken: string;
+  url: string;
+  method: "get" | "post";
+}
+
+export interface Project {
+  expand: string;
+  self: string;
+  id: string;
+  key: string;
+  name: string;
+  avatarUrls: object;
+  projectTypeKey: string;
+  simplified: boolean;
+  style: string;
+  isPrivate: boolean;
+  properties: object;
+}
+
+export interface SearchProjects {
+  self: string;
+  maxResults: number;
+  startAt: number;
+  total: number;
+  isLast: boolean;
+  values: [Project];
+}

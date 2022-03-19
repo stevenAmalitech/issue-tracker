@@ -21,7 +21,7 @@ app.get("/*", (req, res) => {
 
 // @ts-ignore
 app.use((error: any, req, res, next) => {
-  console.error(error.stack);
+  console.error(error.stack || error);
   res.status(error.status || 500).send(error?.message);
 });
 

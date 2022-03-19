@@ -63,7 +63,6 @@ export default function NavBar(props) {
 }
 
 const MenuItem = ({ name, link }) => {
-  console.log({ name, link });
   return (
     <li>
       <Link
