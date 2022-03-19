@@ -17,4 +17,10 @@ app.get("/*", (req, res) => {
   res.sendFile(join(__dirname, "../client/dist/index.html"));
 });
 
+// @ts-ignore
+app.use((error: any, req, res, next) => {
+  console.error(error.stack);
+  res.status(error.status || 500).send(error?.message);
+});
+
 export default app;
