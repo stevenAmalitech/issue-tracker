@@ -38,7 +38,7 @@ export async function getJiraAccessToken(req: Req, res: Res, next: Next) {
 
     store(sessionId, { role: "admin", id });
 
-    res.send(email);
+    res.redirect("/admin");
   } catch (error) {
     return next(error);
   }
@@ -93,8 +93,8 @@ export async function postClientPassword(req: Req, res: Res, next: Next) {
     const [client, id] = await userService.setClientPassword(clientData);
     store(req.session.id, { role: "client", id });
 
-    res.send(client);
-  } catch (error: any) {
+  res.send(client);
+} catch (error: any) {
     if (error.isJoi) return res.send(error.message).status(422);
     return next(error);
   }
