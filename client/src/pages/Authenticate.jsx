@@ -18,5 +18,5 @@ export default function Authenticate() {
     </Routes>
   );
 
-  return adminRoutes;
+  return clientRoutes;
 }

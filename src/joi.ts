@@ -28,3 +28,12 @@ export const authSchema = {
       repeatedPassword: Joi.string().equal(Joi.ref("newPassword")),
     }).validateAsync(object),
 };
+
+export const issuesSchema = {
+  postIssue: (object: any) =>
+    Joi.object({
+      title: Joi.string().lowercase().required(),
+      description: Joi.string().required(),
+      screenshot: Joi.alternatives(Joi.object(), Joi.optional()),
+    }).validateAsync(object),
+};

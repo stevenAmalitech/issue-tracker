@@ -1,4 +1,7 @@
 node_modules
 build
+images
+
+env.d.ts
 
 .env

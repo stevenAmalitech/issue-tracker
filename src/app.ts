@@ -10,6 +10,8 @@ app.use(express.static(join(__dirname, "../client/dist")));
 
 app.use(session);
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 app.use("/api", openRoutes);
 app.use("/api/auth/", protectedRoutes);
 

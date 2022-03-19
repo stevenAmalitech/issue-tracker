@@ -2,7 +2,7 @@ import { Model, DataTypes, Optional } from "sequelize";
 import { sequelize } from "../db/db";
 import { hashPassword } from "../utils/hashPasswords";
 
-interface ClientAttributes {
+export interface ClientAttributes {
   id: number;
   name: string;
   organization: string;

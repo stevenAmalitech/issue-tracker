@@ -101,6 +101,7 @@ export async function postClientPassword(req: Req, res: Res, next: Next) {
 }
 
 export async function tempLogin(req: Req, res: Res, next: Next) {
-  store(req.session.id, { role: "admin", id: req.query.id || 1 });
-  res.send("sdsd");
+  if (process.env.NODE_ENV === "production") return res.redirect("/");
+  store(req.session.id, { role: req.query.role, id: req.query.id });
+  res.send({ role: req.query.role, id: req.query.id });
 }
