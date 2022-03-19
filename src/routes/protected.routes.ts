@@ -8,6 +8,8 @@ const router = express.Router();
 
 router.use(authenticateUser);
 
+router.get("/user", authController.getUser);
+
 // admin routes
 router.post("/client", authController.postClient);
 

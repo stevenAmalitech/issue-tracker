@@ -105,3 +105,7 @@ export async function tempLogin(req: Req, res: Res, next: Next) {
   store(req.session.id, { role: req.query.role, id: req.query.id });
   res.send({ role: req.query.role, id: req.query.id });
 }
+
+export async function getUser(req: Req, res: Res, next: Next) {
+  res.send(store(req.session.id));
+}
