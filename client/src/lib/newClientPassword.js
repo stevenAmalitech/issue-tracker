@@ -14,7 +14,7 @@ export default async function newClientPassword({
       data: { email, newPassword, repeatedPassword },
     });
 
-    if (data.firstName) return data;
+    if (data) return data;
     return null;
   } catch (error) {
     console.error(error);

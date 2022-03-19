@@ -9,4 +9,6 @@ router.get("/jira-auth-code", auth.getJiraAccessToken);
 router.post("/client-login", auth.postClientLogin);
 router.post("/client-set-password", auth.postClientPassword);
 
+router.get("/temp-login", auth.tempLogin)
+
 export { router as openRoutes };

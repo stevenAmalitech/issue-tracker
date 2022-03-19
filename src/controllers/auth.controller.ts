@@ -48,13 +48,12 @@ export async function postClient(req: Req, res: Res, next: Next) {
   try {
     const clientCredentials = <PostClient>await authSchema.postClient({
       ...req.body,
-      ...req.params,
     });
-
-    const df = await userService.createClient(clientCredentials);
+    // @ts-expect-error
+    const df = await userService.createClient(clientCredentials, req.user.id);
     res.send(df);
   } catch (error: any) {
-    if (error.isJoi) return res.send(error.message).status(422);
+    if (error.isJoi) return res.status(422).send(error.message);
     return next(error);
   }
 }
@@ -99,4 +98,9 @@ export async function postClientPassword(req: Req, res: Res, next: Next) {
     if (error.isJoi) return res.send(error.message).status(422);
     return next(error);
   }
+}
+
+export async function tempLogin(req: Req, res: Res, next: Next) {
+  store(req.session.id, { role: "admin", id: req.query.id || 1 });
+  res.send("sdsd");
 }

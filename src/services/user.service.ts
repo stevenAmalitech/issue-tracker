@@ -16,17 +16,17 @@ export async function createOrFindAdmin(email: string) {
   }
 }
 
-export async function createClient(params: PostClient) {
+export async function createClient(params: PostClient, adminId: number) {
   try {
-    const { adminId, email, password, firstName, lastName } = params;
+    const { name, email, password, organization } = params;
 
     await clientModel.create({
       password: await hashPassword(password),
       email,
-      adminId,
+      name,
       lastLogin: null,
-      firstName,
-      lastName,
+      organization,
+      adminId,
     });
 
     return "ok";
@@ -50,9 +50,9 @@ export async function loginClient(params: PostClientLogin) {
     if (client.lastLogin === null) return "input password";
 
     client.update({ lastLogin: new Date() });
-    const { firstName, lastName, id } = client;
+    const { name, organization, id } = client;
 
-    return [{ email, firstName, lastName }, id];
+    return [{ email, name, organization, id }, id];
   } catch (error) {
     throw error;
   }
@@ -69,8 +69,8 @@ export async function setClientPassword(params: PostClientPassword) {
 
     await client.update({ password, lastLogin: new Date() });
 
-    const { firstName, lastName, id } = client;
-    return [{ email, firstName, lastName }, id];
+    const { name, organization, id } = client;
+    return [{ email, name, organization, id }, id];
   } catch (error) {
     throw error;
   }

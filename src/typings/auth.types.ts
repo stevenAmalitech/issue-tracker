@@ -1,9 +1,8 @@
 export interface PostClient {
   email: string;
   password: string;
-  adminId: number;
-  firstName: string;
-  lastName: string;
+  name: string;
+  organization: string;
 }
 
 export interface PostClientLogin {
