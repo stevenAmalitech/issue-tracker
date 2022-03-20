@@ -79,7 +79,7 @@ export default function AddClient(props) {
           <div className="mb-6">
             <SelectField
               label="Assign project"
-              name="project"
+              name="projectId"
               onChange={(e) => handleInputChange(e)}
               value={clientDetails.projectId}
               options={selectOptions}

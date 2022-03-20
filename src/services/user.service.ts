@@ -18,7 +18,7 @@ export async function createOrFindAdmin(email: string) {
 
 export async function createClient(params: PostClient, adminId: number) {
   try {
-    const { name, email, password, organization } = params;
+    const { name, email, password, organization, projectId } = params;
 
     await clientModel.create({
       password: await hashPassword(password),
@@ -27,6 +27,7 @@ export async function createClient(params: PostClient, adminId: number) {
       lastLogin: null,
       organization,
       adminId,
+      projectId,
     });
 
     return "ok";

@@ -1,4 +1,4 @@
-import Joi, { object } from "joi";
+import Joi from "joi";
 
 export const authSchema = {
   getJiraAuthUrl: (object: any) =>
@@ -12,6 +12,7 @@ export const authSchema = {
       name: Joi.string().lowercase().required(),
       organization: Joi.string().lowercase().required(),
       password: Joi.string().required(),
+      projectId: Joi.number().required(),
     }).validateAsync(object),
 
   postClientLogin: (object: any) =>

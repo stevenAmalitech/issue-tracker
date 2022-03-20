@@ -5,6 +5,7 @@ export default async function saveNewClient({
   name,
   organization,
   password,
+  projectId,
 }) {
   const url = "/api/auth/client";
 
@@ -12,15 +13,12 @@ export default async function saveNewClient({
     const { data } = await http({
       method: "post",
       url,
-      data: { email, name, organization, password },
+      data: { email, name, organization, password, projectId },
     });
 
-    console.log(data)
-
     return data;
-
   } catch (error) {
-    throw error
     console.error(error);
+    throw error;
   }
 }

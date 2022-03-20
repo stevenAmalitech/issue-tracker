@@ -1,6 +1,5 @@
 import { Model, DataTypes, Optional } from "sequelize";
 import { sequelize } from "../db/db";
-import { hashPassword } from "../utils/hashPasswords";
 
 export interface ClientAttributes {
   id: number;
@@ -10,6 +9,7 @@ export interface ClientAttributes {
   password: string;
   lastLogin: Date | null;
   adminId: number;
+  projectId: number;
 }
 
 interface ClientCreationAttributes
@@ -23,8 +23,9 @@ const clientModel = sequelize.define<ClientInstance>(
   "client",
   {
     id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-    name: { type: DataTypes.STRING, allowNull: true, defaultValue: null },
-    organization: { type: DataTypes.STRING, allowNull: true, defaultValue: null },
+    name: { type: DataTypes.STRING, allowNull: false },
+    organization: { type: DataTypes.STRING, allowNull: false },
+    projectId: { type: DataTypes.INTEGER, allowNull: false },
     password: { type: DataTypes.STRING, allowNull: false },
     email: { type: DataTypes.STRING, allowNull: false, unique: true },
     lastLogin: { type: DataTypes.DATE },
