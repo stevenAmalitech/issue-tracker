@@ -2,8 +2,10 @@ import Button from "../components/Button";
 import AddClient from "../components/Modals/AddClient";
 import Table from "../components/Table/Table";
 import { useState } from "react";
+import { useAdminData } from "./AdminDashboard";
 
 export default function ClientPortal(props) {
+  const [data] = useAdminData();
   const [showAddClientModal, setShowAddClientModal] = useState(false);
 
   return (
@@ -21,6 +23,7 @@ export default function ClientPortal(props) {
         <AddClient
           show={showAddClientModal}
           closeModal={() => setShowAddClientModal(false)}
+          projects={data.projects}
         />
       </section>
     </div>

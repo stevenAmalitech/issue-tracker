@@ -3,15 +3,22 @@ import Modal from "./Modal";
 import Button from "../Button";
 import InputField from "../Inputs/InputField";
 import saveNewClient from "../../lib/saveNewClient";
+import SelectField from "../Inputs/SelectField";
 
 export default function AddClient(props) {
-  const { show, closeModal, saveClient } = props;
+  const { show, closeModal, projects } = props;
   const [clientDetails, setClientDetails] = useState({
     name: "",
     email: "",
     organization: "",
     password: "",
+    projectId: "",
   });
+
+  const selectOptions = projects?.map(({ name, id }) => ({
+    text: name,
+    value: id,
+  }));
 
   const handleInputChange = ({ target }) => {
     const { name, value } = target;
@@ -67,6 +74,15 @@ export default function AddClient(props) {
               name="password"
               value={clientDetails.password}
               onChange={(e) => handleInputChange(e)}
+            />
+          </div>
+          <div className="mb-6">
+            <SelectField
+              label="Assign project"
+              name="project"
+              onChange={(e) => handleInputChange(e)}
+              value={clientDetails.projectId}
+              options={selectOptions}
             />
           </div>
 

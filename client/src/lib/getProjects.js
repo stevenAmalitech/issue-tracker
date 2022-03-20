@@ -5,7 +5,7 @@ export default async function getProjects() {
     const url = "/api/auth/projects";
 
     const { data } = await http.get(url);
-    console.log(data)
+    return data
   } catch (error) {
     console.error(error)
     throw error
