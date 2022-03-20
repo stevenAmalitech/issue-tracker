@@ -1,6 +1,7 @@
 import express from "express";
 import * as authController from "../controllers/auth.controller";
 import * as issuesController from "../controllers/issues.controller";
+import * as jiraController from "../controllers/jira.controller";
 import { authenticateUser } from "../middleware/authenticateUser";
 import { uploadImage } from "../middleware/uploadImage";
 
@@ -12,6 +13,7 @@ router.get("/user", authController.getUser);
 
 // admin routes
 router.post("/client", authController.postClient);
+router.get("/projects", jiraController.getProjects);
 
 // client routes
 router.post(

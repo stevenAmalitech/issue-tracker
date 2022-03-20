@@ -23,8 +23,9 @@ export default function Authenticate() {
     })();
   }, []);
 
-  const adminRoutes = (
+  const routes = (
     <Routes>
+      <Route path="/client" element={<ClientDashboard />} />
       <Route path="/admin" element={<AdminDashboard />}>
         <Route path="/admin/clients" element={<ClientPortal />} />
         <Route path="*" element={<Unauthorized />} />
@@ -32,16 +33,8 @@ export default function Authenticate() {
     </Routes>
   );
 
-  const clientRoutes = (
-    <Routes>
-      <Route path="/client" element={<ClientDashboard />} />
-      <Route path="*" element={<Unauthorized />} />
-    </Routes>
-  );
-
-  if (user?.role === "client") return clientRoutes;
-  if (user?.role === "admin") return adminRoutes;
-
   // return loading component
-  return null;
+  if (!user.role) return null;
+
+  return routes;
 }
