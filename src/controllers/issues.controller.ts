@@ -20,3 +20,13 @@ export async function postIssue(req: Req, res: Res, next: Next) {
     next(error);
   }
 }
+
+export async function getIssues(req: Req, res: Res, next: Next) {
+  try {
+    // @ts-expect-error
+    const issues = await issueService.allIssues(req.user.id);
+    res.send(issues)
+  } catch (error) {
+    next(error);
+  }
+}

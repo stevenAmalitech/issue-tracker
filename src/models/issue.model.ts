@@ -41,12 +41,11 @@ const issueModel = sequelize.define<IssueInstance>(
   { underscored: true }
 );
 
-// TODO: ENFORCE FOREIGN KEYS
 
-// adminModel.hasMany(issueModel);
-// issueModel.belongsTo(adminModel);
+clientModel.hasMany(issueModel);
+adminModel.hasMany(issueModel);
 
-// clientModel.hasMany(issueModel);
-// issueModel.belongsTo(clientModel);
+issueModel.belongsTo(adminModel);
+issueModel.belongsTo(clientModel);
 
 export { issueModel };
