@@ -1,11 +1,10 @@
 import Keygrip from "keygrip";
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
-import { sessionModel } from "../models/session.model";
+import { jiraTokenModel } from "../models/jiraToken.model";
 import {
   AccessTokenParams,
   AccessTokenResponse,
   CloudIdObject,
-  MakeJiraApiCall,
   SearchProjects,
 } from "../typings/jira.types";
 import {
@@ -19,15 +18,15 @@ const keys = new Keygrip([process.env.KEY_1!, process.env.KEY_2!]);
 export function jiraAuthUrl(sessionId: string) {
   const authorizationUrl = process.env.JIRA_API_AUTH_URL;
 
-  if (!authorizationUrl) return null;
+  if (!authorizationUrl) throw "no api url";
 
   try {
     return authorizationUrl.replace(
       "${YOUR_USER_BOUND_VALUE}",
       keys.sign(sessionId)
     );
-  } catch {
-    return null;
+  } catch (error) {
+    throw error;
   }
 }
 
@@ -58,7 +57,7 @@ export async function jiraAccessToken(params: AccessTokenParams) {
 
     const cloudId = await getCloudId(data.access_token);
 
-    await sessionModel.create({
+    await jiraTokenModel.create({
       accessToken: data.access_token,
       expiresIn: data.expires_in,
       scope: data.scope,

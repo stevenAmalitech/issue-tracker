@@ -1,7 +1,7 @@
 import { Model, DataTypes, Optional } from "sequelize";
 import { sequelize } from "../db/db";
 
-interface SessionsAttributes {
+interface JiraTokenAtrributes {
   id: number;
   sessionId: string;
   accessToken: string;
@@ -10,15 +10,15 @@ interface SessionsAttributes {
   cloudId: string;
 }
 
-interface SessionCreationAttributes
-  extends Optional<SessionsAttributes, "id"> {}
+interface JiraTokenCreationAttributes
+  extends Optional<JiraTokenAtrributes, "id"> {}
 
-interface SessionInstance
-  extends Model<SessionsAttributes, SessionCreationAttributes>,
-    SessionsAttributes {}
+interface JiraTokenInstance
+  extends Model<JiraTokenAtrributes, JiraTokenCreationAttributes>,
+    JiraTokenAtrributes {}
 
-const sessionModel = sequelize.define<SessionInstance>(
-  "Session",
+const jiraTokenModel = sequelize.define<JiraTokenInstance>(
+  "jiraToken",
   {
     id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
     sessionId: { type: DataTypes.STRING, allowNull: false },
@@ -26,9 +26,8 @@ const sessionModel = sequelize.define<SessionInstance>(
     scope: { type: DataTypes.TEXT, allowNull: false },
     expiresIn: { type: DataTypes.INTEGER, allowNull: false },
     cloudId: { type: DataTypes.STRING, allowNull: false },
-
   },
   { underscored: true }
 );
 
-export { sessionModel };
+export { jiraTokenModel };
