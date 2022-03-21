@@ -25,20 +25,20 @@ export async function makeJiraApiCall(params: MakeJiraApiCall) {
   }
 }
 
-export async function sessionDetails(sessionId: string) {
+export async function getJiraCodes(sessionId: string) {
   try {
-    if (process.env.NODE_ENV === "development")
-      return {
-        accessToken: process.env.ACCESS_CODE as string,
-        cloudId: process.env.CLOUD_ID as string,
-      };
+    // if (process.env.NODE_ENV === "development")
+    //   return {
+    //     accessToken: process.env.ACCESS_CODE as string,
+    //     cloudId: process.env.CLOUD_ID as string,
+    //   };
 
     const sessionDetails = await jiraTokenModel.findOne({
       where: { sessionId },
     });
     if (sessionDetails === null) throw "session not found";
 
-    return sessionDetails;
+    return sessionDetails.toJSON();
   } catch (error) {
     throw error;
   }

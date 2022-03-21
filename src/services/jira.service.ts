@@ -10,7 +10,7 @@ import {
 import {
   constructUrl,
   makeJiraApiCall,
-  sessionDetails,
+  getJiraCodes,
 } from "../utils/jiraHelpers";
 
 const keys = new Keygrip([process.env.KEY_1!, process.env.KEY_2!]);
@@ -92,7 +92,7 @@ async function getCloudId(accessToken: string) {
 
 export async function searchProjects(sessionId: string) {
   try {
-    const { accessToken, cloudId } = await sessionDetails(sessionId);
+    const { accessToken, cloudId } = await getJiraCodes(sessionId);
     const url = constructUrl(cloudId, "project/search");
 
     const response = <SearchProjects>(
