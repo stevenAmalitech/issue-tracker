@@ -17,6 +17,7 @@ router.get("/issues", issuesController.getIssues);
 
 router.get("/projects", jiraController.getProjects);
 router.get("/issue-types", jiraController.getIssueTypes);
+router.post("/push-issue-jira", jiraController.postIssue);
 
 // client routes
 router.post(

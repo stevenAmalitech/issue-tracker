@@ -38,3 +38,13 @@ export const issuesSchema = {
       screenshot: Joi.alternatives(Joi.object(), Joi.optional()),
     }).validateAsync(object),
 };
+
+export const jiraSchema = {
+  postIssue: (object: any) =>
+    Joi.object({
+      projectId: Joi.string().required(),
+      issueId: Joi.string().required(),
+      summary: Joi.string().required(),
+      description: Joi.string().required(),
+    }).validateAsync(object),
+};

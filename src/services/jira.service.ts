@@ -6,6 +6,7 @@ import {
   AccessTokenResponse,
   CloudIdObject,
   IssueTypeDetails,
+  JiraPostIssue,
   SearchProjects,
 } from "../typings/jira.types";
 import {
@@ -13,6 +14,7 @@ import {
   makeJiraApiCall,
   getJiraCodes,
   formatIssueTypes,
+  createIssueBody,
 } from "../utils/jiraHelpers";
 
 const keys = new Keygrip([process.env.KEY_1!, process.env.KEY_2!]);
@@ -119,5 +121,29 @@ export async function issueTypes(sessionId: string) {
     return formatIssueTypes(response);
   } catch (error) {
     throw error;
+  }
+}
+
+export async function createIssues(
+  sessionId: string,
+  issueDetails: JiraPostIssue
+) {
+  try {
+    const { accessToken, cloudId } = await getJiraCodes(sessionId);
+    const url = constructUrl(cloudId, "issue");
+
+    const body = createIssueBody(issueDetails);
+
+    const response = await makeJiraApiCall({
+      accessToken,
+      url,
+      method: "post",
+      body,
+    });
+
+    return response;
+  } catch (error) {
+    console.log(error);
+    return "error";
   }
 }
