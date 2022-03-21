@@ -1,5 +1,4 @@
 import { NextFunction as Next, Request as Req, Response as Res } from "express";
-import store from "store2";
 import { authSchema } from "../joi";
 import { jiraAccessToken, jiraAuthUrl } from "../services/jira.service";
 import * as userService from "../services/user.service";
@@ -8,16 +7,16 @@ import {
   PostClientLogin,
   PostClientPassword,
 } from "../typings/auth.types";
+import { sessionStore } from "../utils/sessionStore";
 
 export async function getJiraAuthUrl(req: Req, res: Res, next: Next) {
   const sessionId = req.session.id;
   const { email } = req.query;
 
-  if (!email) return next({ staus: 400 });
+  if (!email) return next({ staus: 404 });
 
-  store(sessionId, email);
-
-  const url = jiraAuthUrl(req.session.id);
+  const url = jiraAuthUrl(sessionId);
+  sessionStore.set(sessionId, { email: email as string });
 
   if (url) res.redirect(url);
   else next({});
@@ -33,10 +32,12 @@ export async function getJiraAccessToken(req: Req, res: Res, next: Next) {
   try {
     await jiraAccessToken({ code, state, sessionId });
 
-    const email = store.remove(sessionId);
+    const email = sessionStore.get(sessionId)?.email;
+    if (!email) return next({ status: 400 });
+
     const id = await userService.createOrFindAdmin(email);
 
-    store(sessionId, { role: "admin", id });
+    sessionStore.set(sessionId, { role: "admin", id });
 
     res.redirect("/admin");
   } catch (error) {
@@ -67,12 +68,12 @@ export async function postClientLogin(req: Req, res: Res, next: Next) {
     const result = await userService.loginClient(clientCredentials);
 
     if (result === "input password") {
-      store(req.session.id, "set-password");
+      sessionStore.set(req.session.id, { setPassword: true });
       return res.send({ setPassword: true });
     }
 
     const [client, id] = result;
-    store(req.session.id, { role: "client", id });
+    sessionStore.set(req.session.id, { role: "client", id: id as number });
 
     res.send(client);
   } catch (error: any) {
@@ -83,18 +84,19 @@ export async function postClientLogin(req: Req, res: Res, next: Next) {
 
 export async function postClientPassword(req: Req, res: Res, next: Next) {
   try {
-    const sessionValue = store.remove(req.session.id);
-    if (sessionValue !== "set-password") return res.status(400).send();
+    const setPassword = sessionStore.get(req.session.id)?.setPassword;
+    if (!setPassword) return res.status(400).send();
 
     const clientData = <PostClientPassword>(
       await authSchema.postClientPassword(req.body)
     );
 
     const [client, id] = await userService.setClientPassword(clientData);
-    store(req.session.id, { role: "client", id });
 
-  res.send(client);
-} catch (error: any) {
+    sessionStore.set(req.session.id, { role: "client", id: id as number });
+
+    res.send(client);
+  } catch (error: any) {
     if (error.isJoi) return res.send(error.message).status(422);
     return next(error);
   }
@@ -102,10 +104,15 @@ export async function postClientPassword(req: Req, res: Res, next: Next) {
 
 export async function tempLogin(req: Req, res: Res, next: Next) {
   if (process.env.NODE_ENV === "production") return res.redirect("/");
-  store(req.session.id, { role: req.query.role, id: req.query.id });
+
+  sessionStore.set(req.session.id, {
+    role: req.query.role as "admin" | "client",
+    // @ts-ignore
+    id: req.query.id as number,
+  });
   res.send({ role: req.query.role, id: req.query.id });
 }
 
 export async function getUser(req: Req, res: Res, next: Next) {
-  res.send(store(req.session.id));
+  res.send(sessionStore.get(req.session.id));
 }

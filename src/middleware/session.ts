@@ -1,8 +1,9 @@
 import ses from "express-session";
 
 export const session = ses({
-  secret: "008293@#$)()",
-  resave: false,
+  secret: process.env.SESSION_SECRET!,
+  resave: true,
   cookie: { maxAge: 60 * 60 * 24 },
   saveUninitialized: true,
+  rolling: true,
 });

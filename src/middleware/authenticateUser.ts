@@ -1,4 +1,3 @@
-import store from "store2";
 import type {
   Request as Req,
   Response as Res,
@@ -6,9 +5,11 @@ import type {
 } from "express";
 import { clientModel } from "../models/client.model";
 import { adminModel } from "../models/admin.model";
+import { sessionStore } from "../utils/sessionStore";
 
 export function authenticateUser(req: Req, res: Res, next: Next) {
-  const user = store(req.session.id);
+
+  const user = sessionStore.get(req.session.id);
   if (!user) throw { status: 401 };
   if (typeof user !== "object") throw { status: 401 };
 
