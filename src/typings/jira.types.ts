@@ -45,3 +45,28 @@ export interface SearchProjects {
   isLast: boolean;
   values: [Project];
 }
+
+export interface IssueTypeDetails {
+  self: string;
+  id: string;
+  description: string;
+  iconUrl: string;
+  name: string;
+  subtask: true;
+  avatarId: number;
+  entityId: string;
+  hierarchyLevel: number;
+  scope: {
+    type: string; //PROJECT INTERFACE
+    project: {
+      self: string;
+      id: string;
+      key: string;
+      name: string;
+      projectTypeKey: string;
+      simplified: boolean;
+      avatarUrls: {};
+      projectCategory: {};
+    };
+  };
+}

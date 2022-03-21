@@ -5,12 +5,14 @@ import {
   AccessTokenParams,
   AccessTokenResponse,
   CloudIdObject,
+  IssueTypeDetails,
   SearchProjects,
 } from "../typings/jira.types";
 import {
   constructUrl,
   makeJiraApiCall,
   getJiraCodes,
+  formatIssueTypes,
 } from "../utils/jiraHelpers";
 
 const keys = new Keygrip([process.env.KEY_1!, process.env.KEY_2!]);
@@ -100,6 +102,21 @@ export async function searchProjects(sessionId: string) {
     );
 
     return response.values;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function issueTypes(sessionId: string) {
+  try {
+    const { accessToken, cloudId } = await getJiraCodes(sessionId);
+    const url = constructUrl(cloudId, "issuetype");
+
+    const response = <[IssueTypeDetails]>(
+      await makeJiraApiCall({ accessToken, url, method: "get" })
+    );
+
+    return formatIssueTypes(response);
   } catch (error) {
     throw error;
   }

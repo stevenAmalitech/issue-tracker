@@ -9,3 +9,12 @@ export async function getProjects(req: Req, res: Res, next: Next) {
     next(error);
   }
 }
+
+export async function getIssueTypes(req: Req, res: Res, next: Next) {
+  try {
+    const issueTypes = await jiraService.issueTypes(req.session.id);
+    res.send(issueTypes);
+  } catch (error) {
+    next(error);
+  }
+}

@@ -13,8 +13,10 @@ router.get("/user", authController.getUser);
 
 // admin routes
 router.post("/client", authController.postClient);
+router.get("/issues", issuesController.getIssues);
+
 router.get("/projects", jiraController.getProjects);
-router.get("/issues", issuesController.getIssues)
+router.get("/issue-types", jiraController.getIssueTypes);
 
 // client routes
 router.post(
