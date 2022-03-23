@@ -5,11 +5,16 @@ import getIssues from "../lib/getIssues";
 import IssueCard from "../components/Cards/IssueCard";
 import uniqueKey from "../utils/uniqueKey";
 import InputField from "../components/Inputs/InputField";
+import getIssueTypes from "../lib/getIssueTypes";
+import getIssueTypesForProject from "../lib/getIssueTypesForProject";
+import PushIssueToJira from "../components/Modals/PushIssueToJira";
 
 export default function IssuePortal() {
   const [data] = useAdminData();
   const [issues, setIssues] = useState([]);
   const [filters, setFilters] = useState({ project: "", title: "" });
+  const [pushIssueData, setPushIssueData] = useState({});
+  const [showPushJiraModal, setShowPushJiraModal] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -38,6 +43,28 @@ export default function IssuePortal() {
     setFilters({ ...filters, [name]: value });
   };
 
+  const handleCardClick = async ({ description, title, client, project }) => {
+    try {
+      const issueTypes = await getIssueTypes();
+      const projectIssueTypes = getIssueTypesForProject(
+        issueTypes,
+        client?.projectId
+      );
+
+      setPushIssueData({
+        summary: title,
+        description,
+        issueTypes: projectIssueTypes,
+        project,
+        projectId: client?.projectId,
+      });
+
+      setShowPushJiraModal(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const filteredIssues = () => {
     let displayData = issues;
 
@@ -51,13 +78,14 @@ export default function IssuePortal() {
         project?.toLowerCase().includes(filters?.project.toLowerCase())
       );
 
-    return displayData.map(({ title, description, project }) => (
-      <IssueCard
-        key={uniqueKey()}
-        title={title}
-        description={description}
-        project={project}
-      />
+    return displayData.map((issue) => (
+      <div key={uniqueKey()} onClick={() => handleCardClick(issue, issue)}>
+        <IssueCard
+          title={issue?.title}
+          description={issue?.description}
+          project={issue?.project}
+        />
+      </div>
     ));
   };
 
@@ -79,8 +107,17 @@ export default function IssuePortal() {
           />
         </div>
       </section>
-      <section className="grid gap-5 sm:grid-cols-2 md:gap-10 md:grid-cols-3 lg:grid-cols-5 ">
-        {filteredIssues()}
+      <section>
+        <div className="grid gap-5 sm:grid-cols-2 md:gap-10 md:grid-cols-3 lg:grid-cols-5 ">
+          {filteredIssues()}
+        </div>
+        <div>
+          <PushIssueToJira
+            show={showPushJiraModal}
+            closeModal={() => setShowPushJiraModal(false)}
+            {...pushIssueData}
+          />
+        </div>
       </section>
     </div>
   );
