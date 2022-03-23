@@ -43,7 +43,8 @@ export const jiraSchema = {
   postIssue: (object: any) =>
     Joi.object({
       projectId: Joi.string().required(),
-      issueId: Joi.string().required(),
+      issueId: Joi.number().required(),
+      issueTypeId: Joi.string().required(),
       summary: Joi.string().required(),
       description: Joi.string().required(),
     }).validateAsync(object),

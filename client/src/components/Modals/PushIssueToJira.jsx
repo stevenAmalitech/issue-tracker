@@ -15,6 +15,7 @@ export default function PushIssueToJira(props) {
     project,
     summary,
     projectId,
+    issueId,
   } = props;
   const [issueDetails, setIssueDetails] = useState({
     projectId: "",
@@ -42,7 +43,7 @@ export default function PushIssueToJira(props) {
 
   const handleButtonClick = () => {
     // TODO: Validation
-    pushIssueToJira(issueDetails).then(() => {
+    pushIssueToJira({ ...issueDetails, issueId }).then(() => {
       closeModal();
     });
   };

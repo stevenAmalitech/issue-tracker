@@ -26,7 +26,8 @@ export interface MakeJiraApiCall {
 
 export interface JiraPostIssue {
   projectId: string;
-  issueId: string;
+  issueId: number;
+  issueTypeId: string;
   summary: string;
   description: string;
 }
@@ -77,6 +78,12 @@ export interface IssueTypeDetails {
       projectCategory: {};
     };
   };
+}
+
+export interface JiraIssueDetails {
+  id: string;
+  key: string;
+  self: string;
 }
 
 export interface CreateIssue {

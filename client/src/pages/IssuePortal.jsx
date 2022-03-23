@@ -43,7 +43,10 @@ export default function IssuePortal() {
     setFilters({ ...filters, [name]: value });
   };
 
-  const handleCardClick = async ({ description, title, client, project }) => {
+  const handleCardClick = async (
+    { description, title, client, project, id },
+    issue
+  ) => {
     try {
       const issueTypes = await getIssueTypes();
       const projectIssueTypes = getIssueTypesForProject(
@@ -57,6 +60,7 @@ export default function IssuePortal() {
         issueTypes: projectIssueTypes,
         project,
         projectId: client?.projectId,
+        issueId: id,
       });
 
       setShowPushJiraModal(true);

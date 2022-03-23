@@ -141,9 +141,8 @@ export async function createIssues(
       body,
     });
 
-    return response;
+    return [issueDetails.issueId, response];
   } catch (error) {
-    console.log(error);
-    return "error";
+    throw error;
   }
 }

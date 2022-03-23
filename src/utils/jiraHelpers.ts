@@ -61,7 +61,7 @@ export function formatIssueTypes(issueTypes: [IssueTypeDetails]) {
 }
 
 export function createIssueBody({
-  issueId,
+  issueTypeId,
   summary,
   description,
   projectId,
@@ -70,7 +70,7 @@ export function createIssueBody({
     fields: {
       summary,
       issuetype: {
-        id: issueId,
+        id: issueTypeId,
       },
       project: {
         id: projectId,
