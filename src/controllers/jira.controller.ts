@@ -37,3 +37,19 @@ export async function postIssue(req: Req, res: Res, next: Next) {
     next(error);
   }
 }
+
+export async function getIssueStatus(req: Req, res: Res, next: Next) {
+  try {
+    if (!req.query?.issueId) return res.status(400).send();
+
+    const issueStatus = await jiraService.issueStatus(
+      req.session.id,
+      // @ts-expect-error
+      req.query.issueId
+    );
+
+    res.send(issueStatus);
+  } catch (error) {
+    next(error);
+  }
+}

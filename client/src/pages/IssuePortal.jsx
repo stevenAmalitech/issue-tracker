@@ -1,4 +1,3 @@
-import Button from "../components/Button";
 import { useAdminData } from "./AdminDashboard";
 import { useEffect, useState } from "react";
 import getIssues from "../lib/getIssues";
@@ -43,7 +42,7 @@ export default function IssuePortal() {
     setFilters({ ...filters, [name]: value });
   };
 
-  const handleCardClick = async (
+  const openPushIssueToJiraModal = async (
     { description, title, client, project, id },
     issue
   ) => {
@@ -69,7 +68,11 @@ export default function IssuePortal() {
     }
   };
 
-  const filteredIssues = () => {
+  const showReportStatus = async () => {
+    console.log("click");
+  };
+
+  const displayFilteredIssues = () => {
     let displayData = issues;
 
     if (filters.title)
@@ -82,8 +85,16 @@ export default function IssuePortal() {
         project?.toLowerCase().includes(filters?.project.toLowerCase())
       );
 
-    return displayData.map((issue) => (
-      <div key={uniqueKey()} onClick={() => handleCardClick(issue, issue)}>
+    let issuesPushedToJira = [],
+      issuesNotPushedToJira = [];
+
+    displayData.forEach((issue) => {
+      if (Boolean(issue.jiraDetails)) issuesPushedToJira.push(issue);
+      else issuesNotPushedToJira.push(issue);
+    });
+
+    issuesNotPushedToJira = issuesNotPushedToJira.map((issue) => (
+      <div key={uniqueKey()} onClick={() => openPushIssueToJiraModal(issue)}>
         <IssueCard
           title={issue?.title}
           description={issue?.description}
@@ -91,6 +102,33 @@ export default function IssuePortal() {
         />
       </div>
     ));
+
+    issuesPushedToJira = issuesPushedToJira.map((issue) => (
+      <div key={uniqueKey()} onClick={() => showReportStatus()}>
+        <IssueCard
+          title={issue?.title}
+          description={issue?.description}
+          project={issue?.project}
+        />
+      </div>
+    ));
+
+    return (
+      <div>
+        <div className="mb-10">
+          <p className="mb-2">Unreported Issues</p>
+          <div className="grid gap-5 sm:grid-cols-2 md:gap-10 md:grid-cols-3 lg:grid-cols-5 ">
+            {issuesNotPushedToJira}
+          </div>
+        </div>
+        <div>
+          <p className="mb-2">Reported Issues</p>
+          <div className="grid gap-5 sm:grid-cols-2 md:gap-10 md:grid-cols-3 lg:grid-cols-5 ">
+            {issuesPushedToJira}
+          </div>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -112,9 +150,7 @@ export default function IssuePortal() {
         </div>
       </section>
       <section>
-        <div className="grid gap-5 sm:grid-cols-2 md:gap-10 md:grid-cols-3 lg:grid-cols-5 ">
-          {filteredIssues()}
-        </div>
+        <div className="">{displayFilteredIssues()}</div>
         <div>
           <PushIssueToJira
             show={showPushJiraModal}

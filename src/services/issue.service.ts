@@ -24,7 +24,7 @@ export async function allIssues(adminId: number) {
   try {
     const issues = await issueModel.findAll({
       where: { adminId },
-      attributes: ["id", "title", "description", "screenshot"],
+      attributes: ["id", "title", "description", "screenshot", "jiraDetails"],
       include: {
         model: clientModel,
         attributes: ["projectId", "id"],

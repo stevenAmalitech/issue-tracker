@@ -39,6 +39,11 @@ export async function getJiraAccessToken(req: Req, res: Res, next: Next) {
 
     sessionStore.set(sessionId, { role: "admin", id });
 
+    // modify session
+    // @ts-expect-error
+    req.session.user = { id, role: "admin" };
+    req.session.save();
+
     res.redirect("/admin");
   } catch (error) {
     return next(error);
@@ -75,6 +80,11 @@ export async function postClientLogin(req: Req, res: Res, next: Next) {
     const [client, id] = result;
     sessionStore.set(req.session.id, { role: "client", id: id as number });
 
+    // modify session
+    // @ts-expect-error
+    req.session.user = { id, role: "client" };
+    req.session.save();
+
     res.send(client);
   } catch (error: any) {
     if (error.isJoi) return res.status(422).send(error.message);
@@ -95,6 +105,11 @@ export async function postClientPassword(req: Req, res: Res, next: Next) {
 
     sessionStore.set(req.session.id, { role: "client", id: id as number });
 
+    // modify session
+    // @ts-expect-error
+    req.session.user = { id, role: "client" };
+    req.session.save();
+
     res.send(client);
   } catch (error: any) {
     if (error.isJoi) return res.send(error.message).status(422);
@@ -110,6 +125,12 @@ export async function tempLogin(req: Req, res: Res, next: Next) {
     // @ts-ignore
     id: req.query.id as number,
   });
+
+  // modify session
+  // @ts-expect-error
+  req.session.user = { role: req.query.role, id: req.query.id };
+  req.session.save();
+
   res.send({ role: req.query.role, id: req.query.id });
 }
 

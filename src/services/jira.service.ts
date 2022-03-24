@@ -146,3 +146,16 @@ export async function createIssues(
     throw error;
   }
 }
+
+export async function issueStatus(sessionId: string, issueId: string) {
+  try {
+    const { accessToken, cloudId } = await getJiraCodes(sessionId);
+    const url = constructUrl(cloudId, `issue/${issueId}`);
+
+    const response = await makeJiraApiCall({ accessToken, url, method: "get" });
+
+    return response
+  } catch (error) {
+    throw error;
+  }
+}
