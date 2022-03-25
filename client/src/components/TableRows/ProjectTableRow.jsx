@@ -1,4 +1,4 @@
-import uniqueKey from "../utils/uniqueKey";
+import uniqueKey from "../../utils/uniqueKey";
 
 export default function ProjectTableRow(projects, clients) {
   return projects
@@ -16,9 +16,9 @@ export default function ProjectTableRow(projects, clients) {
       return { key, name, clients: assignedClients };
     })
     .filter((projects) => Boolean(projects.clients.length))
-    .reduce((acc, curr) => {
+    .reduce((acc, cur) => {
       const row = [];
-      for (const property in curr) row.push(curr[property]);
+      for (const property in cur) row.push(cur[property]);
       acc.push(row);
       return acc;
     }, []);

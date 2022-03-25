@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import getClients from "../lib/getClients";
-import joinClientsToProject from "../components/ProjectTableRow";
+import joinClientsToProject from "../components/TableRows/ProjectTableRow";
 import { useAdminData } from "./AdminDashboard";
 import Button from "../components/Button";
 import Table from "../components/Table/Table";
