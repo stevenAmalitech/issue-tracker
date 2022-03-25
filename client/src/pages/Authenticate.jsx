@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import verifyUser from "../lib/verifyUser";
 import Unauthorized from "./Unauthorized";
 import IssuePortal from "./IssuePortal";
+import ProjectPortal from "./ProjectPortal";
 
 export default function Authenticate() {
   const [user, setUser] = useState({});
@@ -30,6 +31,7 @@ export default function Authenticate() {
       <Route path="/admin" element={<AdminDashboard />}>
         <Route path="/admin/clients" element={<ClientPortal />} />
         <Route path="/admin/issues" element={<IssuePortal />} />
+        <Route path="/admin/projects" element={<ProjectPortal />} />
         <Route path="*" element={<Unauthorized />} />
       </Route>
     </Routes>

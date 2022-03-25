@@ -2,9 +2,9 @@ import uniqueKey from "../../utils/uniqueKey";
 
 export default function TableBodyRow({ rowData }) {
   return (
-    <tr className="bg-white border-b  ">
+    <tr className="bg-white border-b">
       {rowData.map((data) => (
-        <TD data={data} key={data } />
+        <TD key={uniqueKey()} data={data} />
       ))}
     </tr>
   );

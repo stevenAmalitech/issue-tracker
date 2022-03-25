@@ -76,3 +76,12 @@ export async function setClientPassword(params: PostClientPassword) {
     throw error;
   }
 }
+
+export async function findAllClients() {
+  try {
+    const clients = await clientModel.findAll();
+    return clients;
+  } catch (error) {
+    throw error;
+  }
+}

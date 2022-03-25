@@ -137,3 +137,12 @@ export async function tempLogin(req: Req, res: Res, next: Next) {
 export async function getUser(req: Req, res: Res, next: Next) {
   res.send(sessionStore.get(req.session.id));
 }
+
+export async function getClients(req: Req, res: Res, next: Next) {
+  try {
+    const clients = await userService.findAllClients();
+    res.send(clients);
+  } catch (error) {
+    next(error);
+  }
+}
