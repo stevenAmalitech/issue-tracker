@@ -1,5 +1,6 @@
 import Button from "../components/Button";
 import AddClient from "../components/Modals/AddClient";
+import EditClient from "../components/Modals/EditClient";
 import Table from "../components/Table/Table";
 import { useState, useEffect } from "react";
 import { useAdminData } from "./AdminDashboard";
@@ -9,6 +10,8 @@ import getClients from "../lib/getClients";
 export default function ClientPortal(props) {
   const [data] = useAdminData();
   const [showAddClientModal, setShowAddClientModal] = useState(false);
+  const [showEditClientModal, setShowEditClientModal] = useState(false);
+  const [clientDetails, setClientDetails] = useState({});
   const [clients, setClients] = useState({});
   const [tableRows, setTableRows] = useState([]);
 
@@ -22,8 +25,15 @@ export default function ClientPortal(props) {
   useEffect(() => {
     if (!data.projects || !clients.length) return;
 
-    setTableRows(ClientTableRow(data.projects, clients));
+    setTableRows(
+      ClientTableRow(data.projects, clients, (id) => handleRowClick(id))
+    );
   }, [data, clients]);
+
+  const handleRowClick = (clientDetails) => {
+    setClientDetails(clientDetails);
+    setShowEditClientModal(true);
+  };
 
   return (
     <div className="px-5">
@@ -37,7 +47,14 @@ export default function ClientPortal(props) {
       </section>
       <section>
         <Table
-          header={["id", "name", "email", "organization", "assigned project"]}
+          header={[
+            "id",
+            "name",
+            "email",
+            "organization",
+            "assigned project",
+            "Edit",
+          ]}
           rows={tableRows}
         />
       </section>
@@ -47,6 +64,12 @@ export default function ClientPortal(props) {
           show={showAddClientModal}
           closeModal={() => setShowAddClientModal(false)}
           projects={data.projects}
+        />
+        <EditClient
+          show={showEditClientModal}
+          closeModal={() => setShowEditClientModal(false)}
+          projects={data.projects}
+          {...clientDetails}
         />
       </section>
     </div>

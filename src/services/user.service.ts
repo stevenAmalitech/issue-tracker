@@ -4,6 +4,7 @@ import {
   PostClient,
   PostClientLogin,
   PostClientPassword,
+  UpdateClient,
 } from "../typings/auth.types";
 import { hashPassword, verifyPassword } from "../utils/hashPasswords";
 
@@ -81,6 +82,16 @@ export async function findAllClients() {
   try {
     const clients = await clientModel.findAll();
     return clients;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function updateClient(params: UpdateClient, id: number) {
+  try {
+    if (params.password) params.password = await hashPassword(params.password);
+
+    await clientModel.update(params, { where: { id } });
   } catch (error) {
     throw error;
   }

@@ -3,7 +3,15 @@ export interface PostClient {
   password: string;
   name: string;
   organization: string;
-  projectId: number
+  projectId: number;
+}
+
+export interface UpdateClient {
+  email?: string;
+  password?: string;
+  name?: string;
+  organization?: string;
+  projectId?: number;
 }
 
 export interface PostClientLogin {
