@@ -21,11 +21,11 @@ export default function SelectField(props) {
       >
         <option value="" disabled hidden></option>
         {options?.map((option) => {
-          let { text, value } = option;
+          let { text, value, title } = option;
           if (typeof option === "string") value = option;
 
           return (
-            <option value={value} key={value}>
+            <option value={value} key={value} title={title}>
               {text || value}
             </option>
           );

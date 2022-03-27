@@ -39,6 +39,11 @@ export async function getJiraAccessToken(req: Req, res: Res, next: Next) {
 
     sessionStore.set(sessionId, { role: "admin", id });
 
+    // modify session
+    // @ts-expect-error
+    req.session.user = { id, role: "admin" };
+    req.session.save();
+
     res.redirect("/admin");
   } catch (error) {
     return next(error);
@@ -75,6 +80,11 @@ export async function postClientLogin(req: Req, res: Res, next: Next) {
     const [client, id] = result;
     sessionStore.set(req.session.id, { role: "client", id: id as number });
 
+    // modify session
+    // @ts-expect-error
+    req.session.user = { id, role: "client" };
+    req.session.save();
+
     res.send(client);
   } catch (error: any) {
     if (error.isJoi) return res.status(422).send(error.message);
@@ -95,6 +105,11 @@ export async function postClientPassword(req: Req, res: Res, next: Next) {
 
     sessionStore.set(req.session.id, { role: "client", id: id as number });
 
+    // modify session
+    // @ts-expect-error
+    req.session.user = { id, role: "client" };
+    req.session.save();
+
     res.send(client);
   } catch (error: any) {
     if (error.isJoi) return res.send(error.message).status(422);
@@ -110,9 +125,39 @@ export async function tempLogin(req: Req, res: Res, next: Next) {
     // @ts-ignore
     id: req.query.id as number,
   });
+
+  // modify session
+  // @ts-expect-error
+  req.session.user = { role: req.query.role, id: req.query.id };
+  req.session.save();
+
   res.send({ role: req.query.role, id: req.query.id });
 }
 
 export async function getUser(req: Req, res: Res, next: Next) {
   res.send(sessionStore.get(req.session.id));
+}
+
+export async function getClients(req: Req, res: Res, next: Next) {
+  try {
+    const clients = await userService.findAllClients();
+    res.send(clients);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function postClientUpdate(req: Req, res: Res, next: Next) {
+  try {
+    const clientDetails = await authSchema.postClientUpdate({
+      ...req.body,
+      ...req.params,
+    });
+
+    await userService.updateClient(clientDetails, clientDetails.id);
+
+    res.send("ok")
+  } catch (error) {
+    next(error);
+  }
 }

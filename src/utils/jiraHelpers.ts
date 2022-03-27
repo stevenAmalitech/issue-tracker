@@ -1,4 +1,9 @@
-import { MakeJiraApiCall } from "../typings/jira.types";
+import {
+  CreateIssue,
+  IssueTypeDetails,
+  JiraPostIssue,
+  MakeJiraApiCall,
+} from "../typings/jira.types";
 import axios from "axios";
 import { jiraTokenModel } from "../models/jiraToken.model";
 
@@ -8,7 +13,7 @@ export function constructUrl(cloudId: string, resourceName: string) {
 
 export async function makeJiraApiCall(params: MakeJiraApiCall) {
   try {
-    const { accessToken, url, method } = params;
+    const { accessToken, url, method, body } = params;
 
     const { data } = await axios({
       method,
@@ -17,6 +22,7 @@ export async function makeJiraApiCall(params: MakeJiraApiCall) {
         Authorization: `Bearer ${accessToken}`,
         Accept: "application/json",
       },
+      data: body,
     });
 
     return data;
@@ -27,11 +33,11 @@ export async function makeJiraApiCall(params: MakeJiraApiCall) {
 
 export async function getJiraCodes(sessionId: string) {
   try {
-    // if (process.env.NODE_ENV === "development")
-    //   return {
-    //     accessToken: process.env.ACCESS_CODE as string,
-    //     cloudId: process.env.CLOUD_ID as string,
-    //   };
+    if (process.env.NODE_ENV === "development")
+      return {
+        accessToken: process.env.ACCESS_CODE as string,
+        cloudId: process.env.CLOUD_ID as string,
+      };
 
     const sessionDetails = await jiraTokenModel.findOne({
       where: { sessionId },
@@ -42,4 +48,40 @@ export async function getJiraCodes(sessionId: string) {
   } catch (error) {
     throw error;
   }
+}
+
+export function formatIssueTypes(issueTypes: [IssueTypeDetails]) {
+  if (!issueTypes.length) return null;
+
+  return issueTypes.map(({ id, name, scope, description }) => {
+    const projectId = scope?.project?.id;
+
+    return { id, name, projectId, description };
+  });
+}
+
+export function createIssueBody({
+  issueTypeId,
+  summary,
+  description,
+  projectId,
+}: JiraPostIssue) {
+  return <CreateIssue>{
+    fields: {
+      summary,
+      issuetype: {
+        id: issueTypeId,
+      },
+      project: {
+        id: projectId,
+      },
+      description: {
+        type: "doc",
+        version: 1,
+        content: [
+          { type: "paragraph", content: [{ type: "text", text: description }] },
+        ],
+      },
+    },
+  };
 }

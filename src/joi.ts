@@ -1,4 +1,4 @@
-import Joi from "joi";
+import Joi, { object } from "joi";
 
 export const authSchema = {
   getJiraAuthUrl: (object: any) =>
@@ -13,6 +13,16 @@ export const authSchema = {
       organization: Joi.string().lowercase().required(),
       password: Joi.string().required(),
       projectId: Joi.number().required(),
+    }).validateAsync(object),
+
+  postClientUpdate: (object: any) =>
+    Joi.object({
+      email: Joi.string().allow("").email(),
+      name: Joi.string().lowercase().allow(""),
+      organization: Joi.string().allow("").lowercase(),
+      password: Joi.string().allow(""),
+      projectId: Joi.number().allow(""),
+      id: Joi.number().required(),
     }).validateAsync(object),
 
   postClientLogin: (object: any) =>
@@ -36,5 +46,16 @@ export const issuesSchema = {
       title: Joi.string().lowercase().required(),
       description: Joi.string().required(),
       screenshot: Joi.alternatives(Joi.object(), Joi.optional()),
+    }).validateAsync(object),
+};
+
+export const jiraSchema = {
+  postIssue: (object: any) =>
+    Joi.object({
+      projectId: Joi.string().required(),
+      issueId: Joi.number().required(),
+      issueTypeId: Joi.string().required(),
+      summary: Joi.string().required(),
+      description: Joi.string().required(),
     }).validateAsync(object),
 };

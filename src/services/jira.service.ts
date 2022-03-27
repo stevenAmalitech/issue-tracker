@@ -5,12 +5,16 @@ import {
   AccessTokenParams,
   AccessTokenResponse,
   CloudIdObject,
+  IssueTypeDetails,
+  JiraPostIssue,
   SearchProjects,
 } from "../typings/jira.types";
 import {
   constructUrl,
   makeJiraApiCall,
   getJiraCodes,
+  formatIssueTypes,
+  createIssueBody,
 } from "../utils/jiraHelpers";
 
 const keys = new Keygrip([process.env.KEY_1!, process.env.KEY_2!]);
@@ -100,6 +104,57 @@ export async function searchProjects(sessionId: string) {
     );
 
     return response.values;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function issueTypes(sessionId: string) {
+  try {
+    const { accessToken, cloudId } = await getJiraCodes(sessionId);
+    const url = constructUrl(cloudId, "issuetype");
+
+    const response = <[IssueTypeDetails]>(
+      await makeJiraApiCall({ accessToken, url, method: "get" })
+    );
+
+    return formatIssueTypes(response);
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function createIssues(
+  sessionId: string,
+  issueDetails: JiraPostIssue
+) {
+  try {
+    const { accessToken, cloudId } = await getJiraCodes(sessionId);
+    const url = constructUrl(cloudId, "issue");
+
+    const body = createIssueBody(issueDetails);
+
+    const response = await makeJiraApiCall({
+      accessToken,
+      url,
+      method: "post",
+      body,
+    });
+
+    return [issueDetails.issueId, response];
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function issueStatus(sessionId: string, issueId: string) {
+  try {
+    const { accessToken, cloudId } = await getJiraCodes(sessionId);
+    const url = constructUrl(cloudId, `issue/${issueId}`);
+
+    const response = await makeJiraApiCall({ accessToken, url, method: "get" });
+
+    return response
   } catch (error) {
     throw error;
   }
