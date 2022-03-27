@@ -146,3 +146,18 @@ export async function getClients(req: Req, res: Res, next: Next) {
     next(error);
   }
 }
+
+export async function postClientUpdate(req: Req, res: Res, next: Next) {
+  try {
+    const clientDetails = await authSchema.postClientUpdate({
+      ...req.body,
+      ...req.params,
+    });
+
+    await userService.updateClient(clientDetails, clientDetails.id);
+
+    res.send("ok")
+  } catch (error) {
+    next(error);
+  }
+}
